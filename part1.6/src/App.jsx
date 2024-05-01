@@ -1,24 +1,31 @@
 import { useState } from 'react'
 
 const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+
+  const [rating, setRating] = useState({
+    good: 0, neutral:0, bad: 0
+  })
+  const setToRating = (e) => {
+    const newRating = {
+      ...rating,
+      [e.target.name]: ++e.target.value
+    }
+    setRating(newRating)
+  }
 
   return (
     <div>
       <h1>give feedback</h1>
       <br />
-      <button onClick={()=>setGood(good+1)}>good</button>
-      <button onClick={()=>setNeutral(neutral+1)}>neutral</button>
-      <button onClick={()=>setBad(bad+1)}>bad</button>
+      <button name='good' value={rating.good} onClick={setToRating}>good</button>
+      <button name='neutral' value={rating.neutral} onClick={setToRating}>neutral</button>
+      <button name='bad' value={rating.bad} onClick={setToRating}>bad</button>
       <br />
       <h1>statistics</h1>
       <br />
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
+      <p>good {rating.good}</p>
+      <p>neutral {rating.neutral}</p>
+      <p>bad {rating.bad}</p>
 
     </div>
   )
