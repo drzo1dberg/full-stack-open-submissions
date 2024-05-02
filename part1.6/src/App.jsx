@@ -8,16 +8,15 @@ const App = () => {
   const [avg, setAvg] = useState(0)
   const [posPer, setPosPer] = useState(0)
   const score = {good: 1, neutral: 0, bad: -1}
+  const averageScore = (score.good * rating.good) + (score.neutral * rating.neutral) + (score.bad * rating.bad)
+  const calcPositivePercentage = (rating.good / rating.total) * 100
 
   const handleButtonClick = (e) => {
-    console.log(posPer)
     const newRating = {
       ...rating,
       [e.target.name]: ++e.target.value,
       total: rating.total + 1
     }
-    const averageScore = (score.good * rating.good) + (score.neutral * rating.neutral) + (score.bad * rating.bad)
-    const calcPositivePercentage = (rating.good / rating.total) * 100
     setRating(newRating)
     setAvg(averageScore)
     setPosPer(calcPositivePercentage)
