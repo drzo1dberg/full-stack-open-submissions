@@ -1,51 +1,67 @@
 import { useState } from 'react'
 
-const Statistics = ({avgState, posPerState, ratingState}) =>{
+const StatisticsLine = ({data, sign, text}) => sign ?<p>{text}: {data} {sign}</p> : <p>{text}: {data}</p>
+
+const Statistics = ({avgState, posPerState, good, bad, neutral, total}) =>{
   return (
     <div>
       <h1>statistics</h1>
       <br />
-      <p>good {ratingState.good}</p>
-      <p>neutral {ratingState.neutral}</p>
-      <p>bad {ratingState.bad}</p>
-      <p>all {ratingState.total}</p>
-      <p>average {avgState}</p>
-      <p>positive {posPerState} %</p>
+      <StatisticsLine data={good} text={'good'}/>
+      <StatisticsLine data={neutral} text={'neutral'} />
+      <StatisticsLine data={bad} text={'bad'} />
+      <StatisticsLine data={total} text={'total'} />
+      <StatisticsLine data={avgState} text={'avg'} />
+      {posPerState ? <StatisticsLine data={posPerState} sign={'%'} text={'positive'} /> : ''}
     </div>
   )
 }
+
+const Button = ({text, onSmash}) => <button onClick={() =>{onSmash(text)}}> {text} </button>
+
 const App = () => {
 
-  const [rating, setRating] = useState({
-    good: 0, neutral:0, bad: 0, total: 0
-  })
+  const [goodRating, setGood] = useState(0)
+  const [neutralRating, setNeutral] = useState(0)
+  const [badRating, setBad] = useState(0)
   const [avg, setAvg] = useState(0)
   const [posPer, setPosPer] = useState(0)
-  const score = {good: 1, neutral: 0, bad: -1}
-  const averageScore = (score.good * rating.good) + (score.bad * rating.bad)
-  const calcPositivePercentage = (rating.good / rating.total) * 100
 
-  const handleButtonClick = (e) => {
-    const newRating = {
-      ...rating,
-      [e.target.name]: ++e.target.value,
-      total: rating.total + 1
-    }
-    setRating(newRating)
+  const totalRating = goodRating + neutralRating + badRating
+  const score = {good: 1, neutral: 0, bad: -1}
+  const averageScore = (score.good * goodRating) + (score.bad * badRating)
+  const calcPositivePercentage = (goodRating / totalRating) * 100
+
+  const calcStatistics = () => {
     setAvg(averageScore)
     setPosPer(calcPositivePercentage)
-    
+  }
+  const handleButtonClick = (props) => {
+    switch (props) {
+      case 'good':
+          setGood(goodRating+1)
+        break;
+        case 'neutral':
+          setNeutral(neutralRating+1)
+        break;
+        case 'bad':
+          setBad(badRating+1)
+        break;    
+      default:
+        break;
+    }
+    return calcStatistics()
   }
 
   return (
     <div>
       <h1>give feedback</h1>
-      <br />
-      <button name='good' value={rating.good} onClick={handleButtonClick}>good</button>
-      <button name='neutral' value={rating.neutral} onClick={handleButtonClick}>neutral</button>
-      <button name='bad' value={rating.bad} onClick={handleButtonClick}>bad</button>
-      <br />
-      <Statistics avgState={avg} posPerState={posPer} ratingState={rating} />      
+    <br/>
+         <Button text='good' onSmash={handleButtonClick} />
+         <Button text='neutral' onSmash={handleButtonClick}/>
+         <Button text='bad' onSmash={handleButtonClick}/>
+        <br />
+       {totalRating ? <Statistics avgState={avg} posPerState={posPer} bad={badRating} good={goodRating} neutral={neutralRating} total={totalRating} /> : <br /> }      
     </div>
   )
 }
