@@ -1,18 +1,23 @@
 import { useState } from 'react'
 
-const StatisticsLine = ({data, sign, text}) => sign ?<p>{text}: {data} {sign}</p> : <p>{text}: {data}</p>
+const StatisticsLine = ({data, sign, }) => sign ? <td>{data}{sign}</td> : <td>{data}</td>
 
 const Statistics = ({avgState, posPerState, good, bad, neutral, total}) =>{
   return (
     <div>
       <h1>statistics</h1>
       <br />
-      <StatisticsLine data={good} text={'good'}/>
-      <StatisticsLine data={neutral} text={'neutral'} />
-      <StatisticsLine data={bad} text={'bad'} />
-      <StatisticsLine data={total} text={'total'} />
-      <StatisticsLine data={avgState} text={'avg'} />
-      {posPerState ? <StatisticsLine data={posPerState} sign={'%'} text={'positive'} /> : ''}
+      <table>
+        <thead></thead>
+        <tbody>
+        <tr><td>good</td><StatisticsLine data={good}/></tr>       
+        <tr><td>neutral</td><StatisticsLine data={neutral}/></tr>      
+        <tr><td>bad</td><StatisticsLine data={bad}/></tr>        
+        <tr><td>total</td><StatisticsLine data={total}/></tr>       
+        <tr><td>avg</td><StatisticsLine data={avgState}/></tr>      
+        <tr><td>positive</td>{posPerState ? <StatisticsLine data={posPerState} sign={'%'}/> : ''}</tr>
+        </tbody>
+      </table>
     </div>
   )
 }
