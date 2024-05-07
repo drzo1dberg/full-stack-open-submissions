@@ -1,0 +1,6 @@
+rd -r ./node-modules/
+npm i
+npx vite
+git commit -m 
+git add *
+Copy-Item -Path 'B:\Desktop\FullStackOpen\part1.6' -Destination 'B:\Desktop\FullStackOpen\part1.12' -Recurse

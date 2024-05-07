@@ -28,13 +28,18 @@ const App = () => {
     copy[selected] += 1
     setPoints(copy)
   }
+  const mostVoted = (a) => a.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0)
 
   return (
     <div>
+      <h1>Anectdote of the day</h1>
       {anecdotes[selected]}
       <br />
       <Summary arr={points} sel={selected} />
       <button onClick={() => handleVote()}>vote</button><button onClick={()=>handleClick()}>cycle through anecdotes</button>
+      <h1>Most inspiring Anectdote</h1>
+      {anecdotes[mostVoted(points)]}
+      <Summary arr={points} sel={mostVoted(points)} />
     </div>
   )
 }
