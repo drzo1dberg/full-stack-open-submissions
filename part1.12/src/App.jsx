@@ -1,5 +1,11 @@
 import { useState } from 'react'
 
+const Summary = ({arr, sel}) => {
+  return(
+    <p>has {arr[sel]} votes</p>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -11,18 +17,24 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
+  const [points, setPoints] = useState(new Uint32Array(anecdotes.length))
   const [selected, setSelected] = useState(0)
   const handleClick = () => {
     const r = Math.floor(Math.random()*anecdotes.length)
     setSelected(r)
-    return console.log(selected)
   }
+  const handleVote = () => {
+    const copy = [...points]
+    copy[selected] += 1
+    setPoints(copy)
+  }
+
   return (
     <div>
       {anecdotes[selected]}
       <br />
-      <button onClick={()=>handleClick()}>cycle through anecdotes</button>
+      <Summary arr={points} sel={selected} />
+      <button onClick={() => handleVote()}>vote</button><button onClick={()=>handleClick()}>cycle through anecdotes</button>
     </div>
   )
 }
