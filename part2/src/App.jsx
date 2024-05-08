@@ -1,15 +1,7 @@
 const Header = ({course}) => <h1>{course}</h1>
 const Part = ({name, exercises}) => <p>{name} {exercises}</p>
 const Content = ({course}) => course.map((parts) =>(<Part name={parts.name} exercises={parts.exercises} key={parts.id} />))
-const Total = ({course}) => {
-  let sum = 0
-  course.forEach(parts => {
-    sum+=parts.exercises
-  });
-  return(
-    <h2><strong>total of {sum} exercises</strong></h2>
-  )
-}
+const Total = ({course}) => <h2><strong>total of {course.reduce((sum, course ) => sum+=course.exercises, 0)} exercises</strong></h2>
 const Course = ({course}) => {
     return(
       <section>
