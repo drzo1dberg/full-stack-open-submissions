@@ -8,9 +8,10 @@ const App = () => {
   const handleForm = (e) => {
     e.preventDefault() 
     const newPerson = {name: newName}
-    setPersons(persons.concat(newPerson))
+    duplicateCheck(persons, newPerson) ? window.alert(`${newName} is already added to phonebook`) : setPersons(persons.concat(newPerson))
     setNewName(' ')
   }
+  const duplicateCheck = (arr, str) => arr.some((person) => person.name.toLowerCase().trim() === str.name.toLowerCase().trim())  
   const handleInputChange = (e) => setNewName(e.target.value)
   return (
     <div>
