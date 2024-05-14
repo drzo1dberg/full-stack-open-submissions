@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Display = (props) => {
+const Phonebook = (props) => {
   return (
     <ul>
       {props.arr.map((line) => {
@@ -13,7 +13,45 @@ const Display = (props) => {
     </ul>
   );
 };
-
+const AreTheseObjectsEqual = (first, second) => {
+  for (const entry of first) {
+    if (
+      JSON.stringify(entry.name).toLowerCase() ===
+        JSON.stringify(second.name).toLowerCase() &&
+      second.name.length > 0
+    ) {
+      window.alert(`${second.name} is already added to phonebook`);
+      return true;
+    } else if (
+      JSON.stringify(entry.number) === JSON.stringify(second.number) &&
+      second.number.length > 0
+    ) {
+      window.alert(`The number ${second.number} is already added to phonebook`);
+      return true;
+    } else if (second.name.length <= 0 && second.number.length <= 0) {
+      window.alert("enter valid data");
+      return true;
+    }
+  }
+  return false;
+};
+const Search = (obj, query) =>
+  obj.filter((line) =>
+    JSON.stringify(line).toLowerCase().includes(query.toLowerCase())
+  );
+const Input = (props) => {
+  return props.value != null ? (
+    <div>
+      {props.text}
+      <input value={props.value} type={props.type} onChange={props.onChange} />
+    </div>
+  ) : (
+    <div>
+      {props.text}
+      <input type={props.type} onChange={props.onChange} />
+    </div>
+  );
+};
 const App = () => {
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", number: "01234567", id: 1 },
@@ -23,7 +61,6 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [query, setQuery] = useState([]);
-
   const handleForm = (e) => {
     e.preventDefault();
     const newPerson = {
@@ -31,10 +68,8 @@ const App = () => {
       number: newNumber.trim() ? newNumber : "",
       id: persons.length + 1,
     };
-
-    areTheseObjectsEqual(persons, newPerson)
-      ? ""
-      : setPersons(persons.concat(newPerson));
+    !AreTheseObjectsEqual(persons, newPerson) &&
+      setPersons(persons.concat(newPerson));
     setNewName("");
     setNewNumber("");
   };
@@ -47,55 +82,49 @@ const App = () => {
         setNewNumber(e.target.value);
         break;
       case "search":
-        setQuery(search(persons, e.target.value));
+        setQuery(Search(persons, e.target.value));
         break;
       default:
         break;
     }
   };
-  const search = (obj, query) =>
-    obj.filter((line) =>
-      JSON.stringify(line).toLowerCase().includes(query.toLowerCase())
-    );
-  const areTheseObjectsEqual = (first, second) => {
-    for (const entry of first) {
-      if (JSON.stringify(entry.name) === JSON.stringify(second.name)) {
-        window.alert(`${second.name} is already added to phonebook`);
-        return true;
-      } else if (
-        JSON.stringify(entry.number) === JSON.stringify(second.number)
-      ) {
-        window.alert(
-          `The number ${second.number} is already added to phonebook`
-        );
-        return true;
-      }
-    }
-    return false;
-  };
-
   return (
     <div>
       <h2>Phonebook</h2>
       <div>
-        search: <input type="search" onChange={handleInputChange} />
+        <Input
+          text={"filter book: "}
+          type="search"
+          onChange={handleInputChange}
+        />
       </div>
       <br />
       <form onSubmit={handleForm}>
         <div>
-          name:{" "}
-          <input type="text" value={newName} onChange={handleInputChange} />{" "}
-          tel:{" "}
-          <input type="number" value={newNumber} onChange={handleInputChange} />
+          <Input
+            text={"text: "}
+            type="text"
+            onChange={handleInputChange}
+            value={newName}
+          />
+          <Input
+            text={"tel: "}
+            type="number"
+            onChange={handleInputChange}
+            value={newNumber}
+          />
         </div>
         <div>
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
-      {query.length <= 0 ? <Display arr={persons} /> : <Display arr={query} />}
+      {query.length <= 0 ? (
+        <Phonebook arr={persons} />
+      ) : (
+        <Phonebook arr={query} />
+      )}
     </div>
   );
 };
-
 export default App;
