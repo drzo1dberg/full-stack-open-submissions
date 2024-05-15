@@ -1,66 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import AreTheseObjectsEqual from "./components/AreTheseObjectsEqual"
+import Phonebook from "./components/Phonebook"
+import Search from "./components/Search"
+import Input from './components/Input'
+import axios from "axios"
 
-const Phonebook = (props) => {
-  return (
-    <ul>
-      {props.arr.map((line) => {
-        return (
-          <li key={line.id}>
-            {line.name} {line.number}
-          </li>
-        );
-      })}
-    </ul>
-  );
-};
-const AreTheseObjectsEqual = (first, second) => {
-  for (const entry of first) {
-    if (
-      JSON.stringify(entry.name).toLowerCase() ===
-        JSON.stringify(second.name).toLowerCase() &&
-      second.name.length > 0
-    ) {
-      window.alert(`${second.name} is already added to phonebook`);
-      return true;
-    } else if (
-      JSON.stringify(entry.number) === JSON.stringify(second.number) &&
-      second.number.length > 0
-    ) {
-      window.alert(`The number ${second.number} is already added to phonebook`);
-      return true;
-    } else if (second.name.length <= 0 && second.number.length <= 0) {
-      window.alert("enter valid data");
-      return true;
-    }
-  }
-  return false;
-};
-const Search = (obj, query) =>
-  obj.filter((line) =>
-    JSON.stringify(line).toLowerCase().includes(query.toLowerCase())
-  );
-const Input = (props) => {
-  return props.value != null ? (
-    <div>
-      {props.text}
-      <input value={props.value} type={props.type} onChange={props.onChange} />
-    </div>
-  ) : (
-    <div>
-      {props.text}
-      <input type={props.type} onChange={props.onChange} />
-    </div>
-  );
-};
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "01234567", id: 1 },
-    { name: "Peter Schliephake", number: "07654321", id: 2 },
-    { name: "Alberto Sieef", number: "01112131", id: 3 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [query, setQuery] = useState([]);
+  useEffect(() =>  {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
   const handleForm = (e) => {
     e.preventDefault();
     const newPerson = {
@@ -78,7 +34,7 @@ const App = () => {
       case "text":
         setNewName(e.target.value);
         break;
-      case "number":
+      case "tel":
         setNewNumber(e.target.value);
         break;
       case "search":
@@ -98,7 +54,6 @@ const App = () => {
           onChange={handleInputChange}
         />
       </div>
-      <br />
       <form onSubmit={handleForm}>
         <div>
           <Input
@@ -109,7 +64,7 @@ const App = () => {
           />
           <Input
             text={"tel: "}
-            type="number"
+            type="tel"
             onChange={handleInputChange}
             value={newNumber}
           />
