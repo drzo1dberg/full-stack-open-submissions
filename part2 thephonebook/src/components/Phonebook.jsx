@@ -1,15 +1,17 @@
 const Phonebook = (props) => {
-    return (
-      <ul>
-        {props.arr.map((line) => {
-          return (
-            <li key={line.id}>
-              {line.name} {line.number}
-            </li>
-          );
-        })}
-      </ul>
-    );
-  };
+  return (
+    props.entries &&
+    props.entries?.map((entry) => {
+      return (
+        <li key={entry?.id}>
+          {entry?.name} {entry?.number}
+          <button key={entry?.id} onClick={() => props.onClick(entry?.id)}>
+            delete
+          </button>
+        </li>
+      );
+    })
+  );
+};
 
-export default Phonebook
+export default Phonebook;
