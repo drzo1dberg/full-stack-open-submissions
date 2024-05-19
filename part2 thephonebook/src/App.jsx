@@ -5,6 +5,7 @@ import Search from "./components/Search";
 import Input from "./components/Input";
 import Notification from "./components/Notification";
 import phonebookService from "./services/phonebook";
+import Errormessage from "./components/Errormessage";
 
 const App = () => {
   const [persons, setPersons] = useState(null);
@@ -12,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [query, setQuery] = useState([]);
   const [infoMsg, setInfomsg] = useState(null);
+  const [errorMsg, setErrormsg] = useState(null);
   useEffect(() => {
     phonebookService
       .getAll()
@@ -59,7 +61,15 @@ const App = () => {
                 persons.map((n) => (n.id !== changedEntry.id ? n : resp.data))
               )
             )
-            .catch((e) => console.error("updating the entry failed", e));
+            .catch((e) => {
+              console.error(e.code);
+              setErrormsg(
+                `Information of '${changedEntry.name}' has already been removed from server`
+              );
+              setTimeout(() => {
+                setErrormsg(null);
+              }, 5000);
+            });
         setNewName("");
         setNewNumber("");
         break;
@@ -89,6 +99,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={infoMsg} />
+      <Errormessage message={errorMsg} />
       <div>
         <Input
           text={"filter book: "}
