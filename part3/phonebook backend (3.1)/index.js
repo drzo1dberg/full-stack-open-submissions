@@ -2,7 +2,21 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 app.use(express.json());
-app.use(morgan("tiny"));
+morgan.token("body", (req) => JSON.stringify(req.body));
+app.use(
+  morgan((tokens, req, resp) => {
+    return [
+      tokens.method(req, resp),
+      tokens.url(req, resp),
+      tokens.status(req, resp),
+      tokens.res(req, resp, "content-length"),
+      "-",
+      tokens["response-time"](req, resp),
+      "ms",
+      tokens["body"](req),
+    ].join(" ");
+  })
+);
 let phonebook = [
   {
     id: 1,
