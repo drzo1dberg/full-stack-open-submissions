@@ -23,6 +23,14 @@ let phonebook = [
     number: "39-23-6423122",
   },
 ];
+const generateId = () => {
+  const minInt = Math.ceil(
+    phonebook.length > 0 ? Math.max(...phonebook.map((n) => n.id)) : 0
+  );
+  const maxInt = Math.floor((minInt + 1) * 27);
+  const randId = Math.floor(Math.random() * (maxInt - minInt + 1) + minInt);
+  return randId;
+};
 app.get("/api/persons", (req, resp) => {
   resp.json(phonebook);
 });
@@ -47,6 +55,32 @@ app.delete("/api/persons/:id", (req, resp) => {
   const id = Number(req.params.id);
   phonebook = phonebook.filter((entry) => entry.id !== id);
   resp.status(204).end();
+});
+app.post("/api/persons", (req, resp) => {
+  const body = req.body;
+  const duplicateCheck = phonebook.find((e) => e.name === body.name);
+  if (!body.name) {
+    return resp.status(400).json({
+      error: "name is missing",
+    });
+  }
+  if (!body.number) {
+    return resp.status(400).json({
+      error: "number missing",
+    });
+  }
+  if (duplicateCheck) {
+    return resp.status(400).json({
+      error: "name must be unique",
+    });
+  }
+  const phonebookEntry = {
+    id: generateId(),
+    name: body.name,
+    number: body.number,
+  };
+  phonebook = phonebook.concat(phonebookEntry);
+  resp.json(phonebook);
 });
 const PORT = 3001;
 app.listen(PORT, () => {
