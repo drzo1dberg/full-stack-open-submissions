@@ -60,7 +60,7 @@ app.post("/api/persons", (req, resp) => {
       error: "number missing",
     });
   }
-  /*   if (duplicateCheck) {
+  /* DONE  if (duplicateCheck) {
     return resp.status(400).json({
       error: "name must be unique",
     });
