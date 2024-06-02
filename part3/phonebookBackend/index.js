@@ -3,11 +3,9 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
-app.use(express.json());
-app.use(express.static("dist"));
-app.use(cors());
 const Phonebook = require("./models/phonebook");
-
+app.use(express.static("dist"));
+app.use(express.json());
 morgan.token("body", (req) => JSON.stringify(req.body));
 app.use(
   morgan((tokens, req, resp) => {
@@ -23,6 +21,7 @@ app.use(
     ].join(" ");
   })
 );
+app.use(cors());
 app.get("/api/persons", (req, resp) => {
   Phonebook.find({}).then((entries) => {
     resp.json(entries);
