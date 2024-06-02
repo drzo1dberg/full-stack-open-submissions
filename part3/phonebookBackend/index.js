@@ -1,7 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
+const Phonebook = require("./models/phonebook");
 app.use(express.json());
 app.use(express.static("dist"));
 app.use(cors());
@@ -21,64 +23,33 @@ app.use(
     ].join(" ");
   })
 );
-let phonebook = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-const generateId = () => {
-  const minInt = Math.ceil(
-    phonebook.length > 0 ? Math.max(...phonebook.map((n) => n.id)) : 0
-  );
-  const maxInt = Math.floor((minInt + 1) * 27);
-  const randId = Math.floor(Math.random() * (maxInt - minInt + 1) + minInt);
-  return randId;
-};
 app.get("/api/persons", (req, resp) => {
-  resp.json(phonebook);
+  Phonebook.find({}).then((entries) => {
+    resp.json(entries);
+  });
 });
 app.get("/info", (req, resp) => {
-  const count =
-    phonebook.length > 0 ? Math.max(...phonebook.map((n) => n.id)) : 0;
+  const count = Phonebook.count();
   const date = new Date();
   resp.send(
     `<div> <p>Phonebook has info for ${count} </p><p>${date}</p></div>`
   );
 });
 app.get("/api/persons/:id", (req, resp) => {
-  const id = Number(req.params.id);
-  const phonebookEntry = phonebook.find((entry) => entry.id === id);
-  if (phonebookEntry) {
-    resp.json(phonebookEntry);
-  } else {
-    resp.status(404).end();
-  }
+  Phonebook.findById(req.params.id).then((entry) => {
+    resp.json(entry);
+  });
 });
 app.delete("/api/persons/:id", (req, resp) => {
   const id = Number(req.params.id);
-  phonebook = phonebook.filter((entry) => entry.id !== id);
-  resp.status(204).end();
+  Phonebook.findByIdAndDelete(id).then((entry) => {
+    resp.json(entry);
+    resp.status(204).end();
+  });
 });
 app.post("/api/persons", (req, resp) => {
   const body = req.body;
-  const duplicateCheck = phonebook.find((e) => e.name === body.name);
+  // const duplicateCheck = phonebook.find((e) => e.name === body.name);
   if (!body.name) {
     return resp.status(400).json({
       error: "name is missing",
@@ -89,20 +60,20 @@ app.post("/api/persons", (req, resp) => {
       error: "number missing",
     });
   }
-  if (duplicateCheck) {
+  /*   if (duplicateCheck) {
     return resp.status(400).json({
       error: "name must be unique",
     });
-  }
-  const phonebookEntry = {
-    id: generateId(),
+  } */
+  const phonebookEntry = new Phonebook({
     name: body.name,
     number: body.number,
-  };
-  phonebook = phonebook.concat(phonebookEntry);
-  resp.json(phonebook);
+  });
+  phonebookEntry.save().then((savedPbEntry) => {
+    resp.json(savedPbEntry);
+  });
 });
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
