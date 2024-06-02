@@ -12,3 +12,14 @@ npm init
 npm install express
 npm install --save-dev nodemon
 npm run dev
+
+## database stuff
+npm install mongoose
+node mongo.js ...arguments
+
+wuhansoldier
+zVlhZBgqOne9m3ob
+
+## url der db sollte die asozierte collectionim url haben wie zb hier:
+`mongodb+srv://wuhansoldier:${PASSWORD}@
+geldwelt.ojdqkeh.mongodb.net/${COLLECTIONNAME}?retryWrites=true&w=majority&appName=geldwelt`
