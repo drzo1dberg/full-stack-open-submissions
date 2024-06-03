@@ -28,11 +28,12 @@ app.get("/api/persons", (req, resp) => {
   });
 });
 app.get("/info", (req, resp) => {
-  const count = Phonebook.count();
   const date = new Date();
-  resp.send(
-    `<div> <p>Phonebook has info for ${count} </p><p>${date}</p></div>`
-  );
+  Phonebook.countDocuments({}).then((entries) => {
+    resp.send(
+      `<div> <p>Phonebook has numbers for ${entries} Persons </p><p>${date}</p></div>`
+    );
+  });
 });
 app.get("/api/persons/:id", (req, resp, next) => {
   Phonebook.findById(req.params.id)
