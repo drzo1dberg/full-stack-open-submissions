@@ -80,7 +80,7 @@ app.put("/api/persons/:id", (req, resp, next) => {
     name: body.name,
     number: body.number,
   };
-  Phonebook.findOneAndUpdate(req.params.id, phonebookEntry, {
+  Phonebook.findByIdAndUpdate(req.params.id, phonebookEntry, {
     new: true,
   })
     .then((updatedEntry) => {
