@@ -34,19 +34,24 @@ app.get("/info", (req, resp) => {
     `<div> <p>Phonebook has info for ${count} </p><p>${date}</p></div>`
   );
 });
-app.get("/api/persons/:id", (req, resp) => {
+app.get("/api/persons/:id", (req, resp, next) => {
   Phonebook.findById(req.params.id).then((entry) => {
-    resp.json(entry);
-  });
+    if(entry) {
+      resp.json(entry);
+    } else {
+      resp.status(404).end();
+    }
+  })
+  .catch((error) => next(error))
 });
-app.delete("/api/persons/:id", (req, resp) => {
+app.delete("/api/persons/:id", (req, resp, next) => {
   Phonebook.findByIdAndDelete(req.params.id)
     .then((entry) => {
       resp.status(204).end();
     })
     .catch((error) => next(error));
 });
-app.post("/api/persons", (req, resp) => {
+app.post("/api/persons", (req, resp, next) => {
   const body = req.body;
   if (!body.name) {
     return resp.catch((error) => next(error));
@@ -67,6 +72,20 @@ app.post("/api/persons", (req, resp) => {
   phonebookEntry.save().then((savedPbEntry) => {
     resp.json(savedPbEntry);
   });
+});
+app.put("/api/persons/:name", (req, resp, next) => {
+  const body = req.body;
+  const phonebookEntry = {
+    name: body.name,
+    number: body.number,
+  };
+  Phonebook.findOneAndUpdate(phonebookEntry.name, phonebookEntry.number, {
+    new: true,
+  })
+    .then((updatedEntry) => {
+      resp.json(updatedEntry);
+    })
+    .catch((error) => next(error));
 });
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
