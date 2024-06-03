@@ -14,7 +14,7 @@ app.use(express.static("dist"));
 app.use(express.json());
 app.use(requestLogger);
 app.use(cors());
-app.get("/api/notes/:id", (request, response) => {
+app.get("/api/notes/:id", (request, response, next) => {
   Note.findById(request.params.id)
     .then((note) => {
       if (note) {

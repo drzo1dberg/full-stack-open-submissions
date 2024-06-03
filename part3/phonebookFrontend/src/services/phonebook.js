@@ -13,8 +13,8 @@ const removeEntry = (id) => {
   const req = axios.delete(baseUrl + `/${id}`);
   return req.then((resp) => resp.data);
 };
-const updateEntry = (id, newObj) => {
-  const req = axios.put(`${baseUrl}/${id}`, newObj);
+const updateEntry = (name, newObj) => {
+  const req = axios.put(`${baseUrl}/${name}`, newObj);
   return req.then((resp) => resp.data);
 };
 export default { getAll, create, removeEntry, updateEntry };

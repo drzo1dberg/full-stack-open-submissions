@@ -55,7 +55,7 @@ const App = () => {
           `Do you want to change the number for ${changedEntry.name} ?`
         ) &&
           phonebookService
-            .updateEntry(changedEntry.id, changedEntry)
+            .updateEntry(changedEntry.name, changedEntry)
             .then((resp) =>
               setPersons(
                 persons.map((n) => (n.id !== changedEntry.id ? n : resp.data))

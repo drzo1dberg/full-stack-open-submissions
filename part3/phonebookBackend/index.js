@@ -35,14 +35,15 @@ app.get("/info", (req, resp) => {
   );
 });
 app.get("/api/persons/:id", (req, resp, next) => {
-  Phonebook.findById(req.params.id).then((entry) => {
-    if(entry) {
-      resp.json(entry);
-    } else {
-      resp.status(404).end();
-    }
-  })
-  .catch((error) => next(error))
+  Phonebook.findById(req.params.id)
+    .then((entry) => {
+      if (entry) {
+        resp.json(entry);
+      } else {
+        resp.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 app.delete("/api/persons/:id", (req, resp, next) => {
   Phonebook.findByIdAndDelete(req.params.id)
@@ -73,13 +74,13 @@ app.post("/api/persons", (req, resp, next) => {
     resp.json(savedPbEntry);
   });
 });
-app.put("/api/persons/:name", (req, resp, next) => {
+app.put("/api/persons/:id", (req, resp, next) => {
   const body = req.body;
   const phonebookEntry = {
     name: body.name,
     number: body.number,
   };
-  Phonebook.findOneAndUpdate(phonebookEntry.name, phonebookEntry.number, {
+  Phonebook.findOneAndUpdate(req.params.id, phonebookEntry, {
     new: true,
   })
     .then((updatedEntry) => {
