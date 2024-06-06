@@ -17,7 +17,7 @@ mongoose
   });
 
 const phonebookSchema = new mongoose.Schema({
-  name: { type: String, minlength: 3, required },
+  name: { type: String, minlength: 3, required: [true, "Name is required"] },
   number: {
     type: String,
     minlength: 3,
