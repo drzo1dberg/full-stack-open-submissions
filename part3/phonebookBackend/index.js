@@ -76,14 +76,16 @@ app.post("/api/persons", (req, resp, next) => {
   });
 });
 app.put("/api/persons/:id", (req, resp, next) => {
-  const body = req.body;
-  const phonebookEntry = {
-    name: body.name,
-    number: body.number,
-  };
-  Phonebook.findByIdAndUpdate(req.params.id, phonebookEntry, {
-    new: true,
-  })
+  const { name, number } = req.body;
+  Phonebook.findByIdAndUpdate(
+    req.params.id,
+    { name, number },
+    {
+      new: true,
+      runValidators: true,
+      context: "query",
+    }
+  )
     .then((updatedEntry) => {
       resp.json(updatedEntry);
     })
@@ -97,6 +99,8 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message);
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error:` Person validation failed: ${error.message} `});
   }
   next(error);
 };
