@@ -1,4 +1,4 @@
-const app = require('./app') // the actual Express application
+const app = require('./app.js') // the actual Express application
 const config = require('./utils/config.js')
 const logger = require('./utils/logger.js')
 
