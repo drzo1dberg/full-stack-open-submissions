@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const Note = require("./models/note");
-const logger = require('./utils/logger.js');
+const logger = require('./utils/logger');
 
 const requestLogger = (request, response, next) => {
   logger.info("Method:", request.method);
@@ -11,7 +11,6 @@ const requestLogger = (request, response, next) => {
   logger.info("---");
   next();
 };
-const listen = () => {
 app.use(express.static("dist"));
 app.use(express.json());
 app.use(requestLogger);
@@ -72,7 +71,6 @@ const unknownEndpoint = (request, response) => {
 };
 // handler of requests with unknown endpoint
 app.use(unknownEndpoint);
-app.listen();
 const errorHandler = (error, request, response, next) => {
   logger.error(error.message);
   if (error.name === "CastError") {
@@ -88,7 +86,6 @@ const errorHandler = (error, request, response, next) => {
 };
 // handler of requests with result to errors
 app.use(errorHandler);
-}
 module.exports = {
-    listen,
+    app,
   }
