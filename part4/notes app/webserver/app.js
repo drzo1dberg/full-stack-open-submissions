@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const Note = require("./models/note");
-const logger = require('./utils/logger');
+const logger = require('./utils/logger.js');
 
 const requestLogger = (request, response, next) => {
   logger.info("Method:", request.method);

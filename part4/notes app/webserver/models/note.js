@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const logger = require('../utils/logger');
-const config = require('./utils/config')
+const logger = require('../utils/logger.js');
+const config = require('../utils/config.js')
 
 mongoose.set("strictQuery", false);
 
